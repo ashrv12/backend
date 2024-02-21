@@ -8,31 +8,21 @@ app.use(cors());
 
 app.use(express.json());
 
-app.post("/blast", (req, res) => {
-  const body = req.body;
-
-  console.log({ body });
-
-  res.json([
-    {
-      status: "Success",
-    },
-  ]);
-});
-
+// we reading this yessir
 app.get("/read", (req, res) => {
   const data = fs.readFileSync("articles.json", "utf8");
 
   res.json(JSON.parse(data));
 });
 
+// we creating new shit yessirrr :,<
 app.post("/read/create", (req, res) => {
   const { title, desc } = req.body;
 
   const data = fs.readFileSync("articles.json", "utf8");
   const list = JSON.parse(data);
 
-  const articleId = list.length + 1;
+  const articleId = Date.now();
 
   list.push({
     id: articleId,
@@ -48,7 +38,8 @@ app.post("/read/create", (req, res) => {
   ]);
 });
 
-app.put("/update/:id", (req, res) => {
+// we updating it YESSIR (end me)
+app.put("/read/update/:id", (req, res) => {
   const id = req.params.id;
 
   console.log(id);
@@ -58,20 +49,15 @@ app.put("/update/:id", (req, res) => {
   res.json([{ write: "Success" }]);
 });
 
-// app.get("/read/delete", (req, res) => {
-//   const data = fs.readFileSync("articles.json", "utf8");
-//   const list = JSON.parse(data);
+app.delete("/read/delete/:id", (req, res) => {
+  const { id } = req.params;
 
-//   list.pop();
-//   res.json(
-//     [
-//       {
-//         thewrite: "popped last",
-//       },
-//     ],
-//     JSON.parse(data)
-//   );
-// });
+  const data = fs.readFileSync("articles.json", "utf8");
+  const list = JSON.parse(data);
+
+  const newList = list.filter((item) => item.id !== id);
+  res.json([{ status: "succ" }]);
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
