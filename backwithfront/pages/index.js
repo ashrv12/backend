@@ -5,6 +5,9 @@ export default function Home() {
   const [article, setArticle] = useState([]);
   const [desc, setDesc] = useState("");
   const [title, setTitle] = useState("");
+  const [descUp, setUpdateDesc] = useState("");
+  const [titleUp, setUpdateTitle] = useState("");
+  const [currentEditId, setEditId] = useState("");
 
   useEffect(() => {
     fetchPosts();
@@ -53,6 +56,24 @@ export default function Home() {
     });
   };
 
+  const editTask = () => {
+    console.log(currentEditId);
+    axios.put(`http://localhost:3000/read/update/${currentEditId}`, {
+      title: titleUp,
+      desc: descUp,
+    });
+    setEditId("");
+    fetchPosts();
+    document.getElementById("my_modal_3").close();
+  };
+
+  function editOpener(id) {
+    document.getElementById("my_modal_3").showModal();
+    setEditId(id);
+    console.log(id);
+  }
+
+  // this is for adding a task
   const handleChangeTitle = (event) => {
     setTitle(event.target.value);
   };
@@ -61,19 +82,28 @@ export default function Home() {
     setDesc(event.target.value);
   };
 
+  // this is for editing a task
+  const handleUpdateTitle = (event) => {
+    setUpdateTitle(event.target.value);
+  };
+
+  const handleUpdateDesc = (event) => {
+    setUpdateDesc(event.target.value);
+  };
+
   return (
     <main class="container mx-auto my-10">
       <input
         type="text"
         placeholder="Title"
-        class="input input-bordered w-full max-w-xs"
+        class="text-slate-900 input input-bordered w-full max-w-xs"
         value={title}
         onChange={handleChangeTitle}
       />
       <input
         type="text"
         placeholder="Desc"
-        class="ml-3 input input-bordered w-full max-w-xs"
+        class="text-slate-900 ml-3 input input-bordered w-full max-w-xs"
         value={desc}
         onChange={handleChangeDesc}
       />
@@ -83,14 +113,19 @@ export default function Home() {
       {article.map((article) => (
         <div
           id={article.id}
-          className="card rounded-md bg-slate-200 my-2 shadow"
+          className="card rounded-md bg-slate-800 my-2 shadow"
         >
           <div className="card-title">{article.title}</div>
           <p>{article.desc}</p>
           <div class="flex gap-2">
-            <button className="btn btn-outline">Edit</button>
             <button
-              className="btn btn-outline"
+              className="btn btn-outline btn-accent"
+              onClick={() => editOpener(article.id)}
+            >
+              Edit
+            </button>
+            <button
+              className="btn btn-outline btn-accent"
               onClick={() => deleteTask(article.id)}
             >
               Delete
@@ -98,6 +133,65 @@ export default function Home() {
           </div>
         </div>
       ))}
+      {/* <div
+        id="my_modal_3"
+        class="flex flex-col bg-slate-600/50 absolute inset-0 modal"
+      >
+        <div class="flex flex-col m-auto gap-y-5">
+          <span class="">TIME TO EDIT</span>
+          <input
+            type="text"
+            placeholder="Title"
+            class="text-slate-900 input input-bordered input-primary w-full max-w-xs"
+            value={title}
+            onChange={handleChangeTitle}
+          />
+          <input
+            type="text"
+            placeholder="Description"
+            class="text-slate-900 input input-bordered input-primary w-full max-w-xs"
+            value={desc}
+            onChange={handleChangeDesc}
+          />
+          <div>
+            <button class="text-slate-50 btn glass w-1/2" onClick={closePanel}>
+              Cancel
+            </button>
+            <button class="text-slate-50 btn glass w-1/2" onClick={editTask}>
+              Edit
+            </button>
+          </div>
+        </div>
+      </div> */}
+      <dialog id="my_modal_3" class="modal">
+        <div class="modal-box">
+          <form method="dialog">
+            <button class="text-slate-900 btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          <div class="flex flex-col gap-y-3">
+            <h3 class="text-slate-900 font-bold text-lg">TIME TO EDIT</h3>
+            <input
+              type="text"
+              placeholder="Title"
+              class="text-slate-900 input input-bordered input-primary w-full max-w-xs"
+              value={titleUp}
+              onChange={handleUpdateTitle}
+            />
+            <input
+              type="text"
+              placeholder="Description"
+              class="text-slate-900 input input-bordered input-primary w-full max-w-xs"
+              value={descUp}
+              onChange={handleUpdateDesc}
+            />
+            <button class="text-slate-900 btn glass" onClick={editTask}>
+              Edit
+            </button>
+          </div>
+        </div>
+      </dialog>
     </main>
   );
 }

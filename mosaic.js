@@ -40,14 +40,38 @@ app.post("/read/create", (req, res) => {
 
 // we updating it YESSIR (end me)
 app.put("/read/update/:id", (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
+  const { title, desc } = req.body;
 
-  console.log(id);
+  const data = fs.readFileSync("articles.json", "utf8");
+  const list = JSON.parse(data);
 
-  const updateData = req.body;
+  const index = list.findIndex((item) => item.id === Number(id));
+
+  list[index].title = title;
+  list[index].desc = desc;
+  fs.writeFileSync("articles.json", JSON.stringify(list));
 
   res.json([{ write: "Success" }]);
 });
+
+// testing area
+app.put("/test/:id", (req, res) => {
+  const { id } = req.params.id;
+  const { title, desc } = req.body;
+
+  const data = fs.readFileSync("articles.json", "utf8");
+  const list = JSON.parse(data);
+
+  const index = list.findIndex((item) => item.id === Number(id));
+
+  list[index].title = title;
+  list[index].desc = desc;
+  fs.writeFileSync("articles.json", JSON.stringify(list));
+
+  res.json([{ write: "Success" }]);
+});
+// testing area
 
 app.delete("/read/delete/:id", (req, res) => {
   const { id } = req.params;
@@ -55,7 +79,9 @@ app.delete("/read/delete/:id", (req, res) => {
   const data = fs.readFileSync("articles.json", "utf8");
   const list = JSON.parse(data);
 
-  const newList = list.filter((item) => item.id !== id);
+  const newList = list.filter((item) => item.id !== Number(id));
+
+  fs.writeFileSync("articles.json", JSON.stringify(newList));
   res.json([{ status: "succ" }]);
 });
 
