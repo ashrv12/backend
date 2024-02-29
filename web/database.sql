@@ -28,3 +28,16 @@ update tasks set title = 'bi ugaamaargui bna' where id = 6
 
 -- drop table to delete table
 drop table tasks
+
+
+-- testing
+CREATE TABLE users (
+  user_id SERIAL PRIMARY KEY,
+  email VARCHAR(50) UNIQUE NOT NULL,
+  name VARCHAR(50) UNIQUE NOT NULL,
+  password TEXT,
+  avatar_img TEXT,
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP,
+  currency_type TEXT DEFAULT 'MNT'
+)   
